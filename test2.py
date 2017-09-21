@@ -1,16 +1,20 @@
-import tornado.ioloop
-import tornado.web
+class Test(object):
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write("Hello, world")
+    __slots__ = ("name", "_Test__string")
 
-def make_app():
-    return tornado.web.Application([
-        (r"/", MainHandler),
-    ])
+    def __init__(self, name):
+        self.name = name
+        self.__string = "s"
 
-if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
+    @property
+    def url(self):
+        return "sss"
+
+a = Test("shihongguang")
+
+class Test1(Test):
+    pass
+
+b = Test1("ss")
+
+print(Test.__dict__)

@@ -6,7 +6,9 @@ from request import Request
 
 class HttpProtocol(asyncio.Protocol):
 
-    def __init__(self):
+    def __init__(self, loop=None, route=None):
+        self._route = route
+        self._loop = loop
         self._transport = None
         self._parser = HttpRequestParser(self)
         self._request = Request()
@@ -37,7 +39,33 @@ class HttpProtocol(asyncio.Protocol):
         self._request.body.append(body)
 
     def on_message_complete(self):
-        raise Exception("start_response not achieved")
+        if self._request.body:
+            self._request.body = b"".join(self._request.body)
+
+        self._loop.create_task(
+            self.start_response(request=self._request, transport=self._transport)
+        )
 
     async def start_response(self, transport, request):
-        raise Exception("start_response not achieved")
+        transport.write(self._route["/"](request))
+        # transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
+        if request.version == "1.0":
+            transport.close()
+
+
+if __name__ == "__main__":
+    import uvloop
+    from functools import partial
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    loop = asyncio.get_event_loop()
+    HttpProtocol = partial(HttpProtocol, loop)
+    print(HttpProtocol)
+    server_coro = loop.create_server(HttpProtocol, "0.0.0.0", "8002")
+    server = loop.run_until_complete(server_coro)
+    loop.run_until_complete(server.wait_closed())
+
+
+
+
+

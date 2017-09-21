@@ -6,7 +6,7 @@ app = Aquarius(__name__)
 
 
 @app.route("/")
-async def test1(request):
+def test1(request):
     return json_response({"n": "s"})
 
 

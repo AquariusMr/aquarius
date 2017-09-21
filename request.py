@@ -1,29 +1,31 @@
 class Request(object):
 
+    __slots__ = ("uri", "version", "method", "headers", "body")
+
     def __init__(self):
         self.uri = ""
         self.version = "1.1"
-        self.method = None
+        self.method = ""
         self.headers = {}
         self.body = []
-
-        self.__query_string = {}
 
     @property
     def url(self):
         return self.uri.split("?", 1)[0]
 
-    def query_string_parameters(self):
+    def __query_string_parameters(self):
+        _query_string = {}
+
         try:
             query_string = self.uri.split("?", 1)[1]
             for string in query_string.split("&"):
                 parameters = string.split("=", 1)
                 name, value = parameters if len(parameters) == 2 else parameters.append("")
-                self.__query_string.update({name: value})
-        except IndexError:
-            pass
+                _query_string.update({name: value})
+        finally:
+            return _query_string
 
     @property
-    def query_string(self):
-        self.query_string_parameters()
-        return self.__query_string
+    def query_str(self):
+        return self.__query_string_parameters()
+
