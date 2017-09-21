@@ -24,7 +24,6 @@ class Aquarius:
 
         print(HttpProtocol)
 
-
         server_coro = loop.create_server(HttpProtocol, "0.0.0.0", "8002")
         server = loop.run_until_complete(server_coro)
         loop.run_until_complete(server.wait_closed())
