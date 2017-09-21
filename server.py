@@ -6,6 +6,8 @@ from request import Request
 
 class HttpProtocol(asyncio.Protocol):
 
+    __slots__ = ("_route", "_loop", "_transport", "_parser", "_request")
+
     def __init__(self, loop=None, route=None):
         self._route = route
         self._loop = loop

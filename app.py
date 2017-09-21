@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     def test(request):
-        print(request.url)
+        # print(request.url)
         return json_response({"name": "shihongguang"})
 
     app.run()
