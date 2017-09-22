@@ -2,6 +2,8 @@ __pycache__/*
 .idea/*
 .vscode/*
 *.swp
+*.pyc
+
 
 __pycache__
 migrations
