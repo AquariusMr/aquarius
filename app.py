@@ -1,3 +1,5 @@
+import os
+import sys
 import asyncio
 import uvloop
 from functools import partial
@@ -15,6 +17,10 @@ class Aquarius:
         self._route_config = {}
 
     def run(self, host="0.0.0.0", port=8002, **kwargs):
+
+        if self._name:
+            __file__ = os.path.dirname(os.path.dirname(os.path.abspath(self._name)))
+            sys.path.append(__file__)
 
         HttpProtocol = self._protocol
 
