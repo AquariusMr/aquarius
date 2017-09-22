@@ -10,6 +10,7 @@ def json_response(struct):
     t = [
         b'HTTP/1.1 200 OK',
         b'Content-Type:application/json; charset=utf-8',
+        b'Server: aquarius',
         b'',
         b'',
         b'\r\n']

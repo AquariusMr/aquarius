@@ -66,6 +66,6 @@ if __name__ == '__main__':
     @app.route("/")
     async def test(request):
         # print(request.url)
-        return response({"name": "shihongguang"})
+        return response({"name": "shihongguang", "age": 25 , "gender": 0, "language": "python"})
 
     app.run()
