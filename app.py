@@ -6,7 +6,6 @@ from functools import partial
 
 from server import HttpProtocol
 from request import Request
-from response import json_response
 
 
 class Aquarius:
@@ -57,12 +56,16 @@ class Aquarius:
         finally:
             return result
 
+
 if __name__ == '__main__':
+
+    from response import json_response as response
+
     app = Aquarius(__name__)
 
     @app.route("/")
     async def test(request):
         # print(request.url)
-        return json_response({"name": "shihongguang"})
+        return response({"name": "shihongguang"})
 
     app.run()
