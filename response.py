@@ -15,6 +15,6 @@ def json_response(struct):
         b'\r\n']
 
     t[-2] = bytes(body, encoding='utf-8')
-    t[-3] = bytes('Content-Length:'+str(len(body)+4) + "\r\n", encoding='utf-8')
+    t[-3] = bytes('Content-Length:'+str(len(body)) + "\r\n", encoding='utf-8')
 
     return b'\r\n'.join(t)
