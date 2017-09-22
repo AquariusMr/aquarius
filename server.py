@@ -52,6 +52,7 @@ class HttpProtocol(asyncio.Protocol):
         try:
             transport.write(await self._route[request.url](request))
         except Exception as e:
+            print(e)
             transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
         if request.version == "1.0":
             transport.close()

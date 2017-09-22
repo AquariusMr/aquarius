@@ -56,12 +56,13 @@ class Aquarius:
 if __name__ == '__main__':
 
     from response import json_response as response
+    from celery_test import sendmail as send
 
     app = Aquarius(__name__)
 
     @app.route("/")
     async def test(request):
-        # print(request.url)
-        return response({"name": "shihongguang", "age": 25 , "gender": 0, "language": "python"})
+        task = send.delay(1234)
+        return response({"key": task.id })
 
     app.run()
