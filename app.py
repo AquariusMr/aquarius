@@ -33,7 +33,6 @@ class Aquarius:
         finally:
             loop.close()
 
-
     def route(self, path):
 
         def _inner(func):
