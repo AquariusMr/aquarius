@@ -1,7 +1,6 @@
 import asyncio
 import uvloop
 from functools import partial
-from inspect import isawaitable
 
 from server import HttpProtocol
 from request import Request
