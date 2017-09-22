@@ -15,7 +15,7 @@ class Aquarius:
         self._protocol = protocol
         self._route_config = {}
 
-    def run(self, host="0.0.0.0", port=8002, **kwargs):
+    def run(self, host="0.0.0.0", port=8002, orm=None, **kwargs):
 
         HttpProtocol = self._protocol
 
@@ -52,16 +52,33 @@ class Aquarius:
         finally:
             return result
 
+    def orm_setting(self):
+
+        if self._name:
+            __file__ = os.path.dirname(os.path.dirname(os.path.abspath(self._name)))
+            sys.path.append(__file__)
+
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "db.settings")
+        import django
+        django.setup()
+
 
 if __name__ == '__main__':
 
     from response import json_response as response
 
     app = Aquarius(__name__)
+    app.orm_setting()
+
+    from auther.models import Auther
 
     @app.route("/")
     async def test(request):
         # print(request.url)
+        # auther_obj = Auther()
+        # auther_obj.save()
+        Auther.objects.all()
         return response({"name": "shihongguang", "age": 25 , "gender": 0, "language": "python"})
 
     app.run()
+
