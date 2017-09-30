@@ -62,7 +62,6 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        task = send.delay(1234)
-        return response({"key": task.id })
+        return response({"name": "shihongguang"})
 
     app.run()
