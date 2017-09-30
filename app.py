@@ -53,15 +53,25 @@ class Aquarius:
             return result
 
 
+
 if __name__ == '__main__':
 
     from response import json_response as response
-    from celery_test import sendmail as send
+
+    from already_sql import *
+    t = Already()
+    print(t)
+
+    import redis
+    r = redis.Redis(host='0.0.0.0', port=6379, decode_responses=True)
+
+    b = r.get("name")
 
     app = Aquarius(__name__)
 
     @app.route("/")
     async def test(request):
-        return response({"name": "shihongguang"})
+        a =str(t.sql("select * from test"))
+        return response({"name": a})
 
     app.run()
