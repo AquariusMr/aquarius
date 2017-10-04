@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        a =str(t.sql("select * from student"))
+        a = str(t.sql("select * from student"))
         return response({"name": a})
 
     app.run()
