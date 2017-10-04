@@ -1,51 +1,35 @@
 import pymysql as mysql
 
-class ExecuteResult(object):
+
+class SqlCache(object):
 
     def __init__(self):
-        self.query_string = ""
+        self.string = ""
         self.result = None
 
+    def clear(self):
+        self.query_string = ""
+        self.query_result = None
 
-class Already(object):
+
+class MysqlAlready(object):
 
     def __init__(self, *args, **kwargs):
+        self.connect = mysql.connect(*args, **kwargs)
+        self.cursor = self.connect.cursor()
+        self.query_cache = SqlCache()
 
-        if not (args and kwargs):
-            self.con = self.connect("127.0.0.1", "root", "mysql", "ip")
-        else:
-            self.con = self.connect(*args, **kwargs)
+    def sql(self, sql_string=None, *args, **kwargs):
 
-        if self.auto_commit:
-            self.con.autocommit(1)
+        if sql_string != self.query_cache.string:
+            self.exec(sql_string, *args, **kwargs)
+            self.query_cache.string = sql_string
+            self.query_cache.result = self.cursor.fetchall()
 
-        self.cur = self.con.cursor()
+        return self.query_cache.result
 
-        self.query_string = ""
-        self._result = ExecuteResult()
+    def exec(self, sql_string, *args, **kwargs):
+        self.cursor.execute(sql_string, *args, **kwargs)
 
-    @property
-    def connect(self):
-        return mysql.connect
-
-    @property
-    def auto_commit(self):
-        return True
-
-    def sql(self, sql=None, *args, **kwargs):
-        self.query_string = sql
-
-        if sql[0] != "s":
-            self.cur.execute(sql, *args, **kwargs)
-            self._result.query_string = sql
-            self._result.result = None
-
-        elif self.query_string != self._result.query_string and self._result.result is None:
-            self.cur.execute(sql, *args, **kwargs)
-            self._result.query_string = sql
-            self._result.result = self.cur.fetchall()
-
-        return self._result.result
-
-    def __str__(self):
-        return str(self._result.result)
+    def result(self):
+        return self.cursor.fetchall()

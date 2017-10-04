@@ -1,4 +1,3 @@
-import os
 import sys
 import asyncio
 import uvloop
@@ -59,7 +58,7 @@ if __name__ == '__main__':
     from response import json_response as response
 
     from already_sql import *
-    t = Already()
+    t = MysqlAlready("127.0.0.1", "root", "mysql", "test")
     print(t)
 
     import redis
@@ -71,7 +70,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        a =str(t.sql("select * from test"))
+        a =str(t.sql("select * from student"))
         return response({"name": a})
 
     app.run()
