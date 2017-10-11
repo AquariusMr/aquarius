@@ -5,11 +5,17 @@ from functools import partial
 
 from server import HttpProtocol
 from request import Request
+from response import json_response
+
+class ServerHttpProtocol(HttpProtocol):
+
+    def to_response(self, content):
+        return json_response(content)
 
 
 class Aquarius:
 
-    def __init__(self, name=None, protocol=HttpProtocol):
+    def __init__(self, name=None, protocol=ServerHttpProtocol):
         self._name = name
         self._protocol = protocol
         self._route_config = {}
@@ -52,10 +58,7 @@ class Aquarius:
             return result
 
 
-
 if __name__ == '__main__':
-
-    from response import json_response as response
 
     from already_sql import *
     t = MysqlAlready("127.0.0.1", "root", "mysql", "test")
@@ -70,7 +73,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        a = str(t.sql("select * from student"))
-        return response({"name": a})
+        a = str(t.sql("select * from auth_user"))
+        return {"name": a}
 
     app.run()

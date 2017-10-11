@@ -50,12 +50,18 @@ class HttpProtocol(asyncio.Protocol):
 
     async def start_response(self, transport, request):
         try:
-            transport.write(await self._route[request.url](request))
+            content = await self._route[request.url](request)
+            print(content)
+            transport.write(self.to_response(content))
         except Exception as e:
             print(e)
             transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
         if request.version == "1.0":
             transport.close()
+
+    def to_response(self, content):
+        return content
+
 
 
 if __name__ == "__main__":
