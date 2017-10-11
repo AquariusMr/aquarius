@@ -5,17 +5,12 @@ from functools import partial
 
 from server import HttpProtocol
 from request import Request
-from response import json_response
-
-class ServerHttpProtocol(HttpProtocol):
-
-    def to_response(self, content):
-        return json_response(content)
+from response import HttpResponse
 
 
 class Aquarius:
 
-    def __init__(self, name=None, protocol=ServerHttpProtocol):
+    def __init__(self, name=None, protocol=HttpProtocol):
         self._name = name
         self._protocol = protocol
         self._route_config = {}
@@ -27,7 +22,8 @@ class Aquarius:
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         loop = asyncio.get_event_loop()
 
-        HttpProtocol = partial(HttpProtocol, loop, self._route_config)
+        HttpProtocol = partial(HttpProtocol, loop, self._route_config, 
+            self.to_response)
         print(HttpProtocol)
 
         server_coro = loop.create_server(HttpProtocol, host=host, port=port, **kwargs)
@@ -57,23 +53,18 @@ class Aquarius:
         finally:
             return result
 
+    def to_response(self, content):
+        return content
 
 if __name__ == '__main__':
 
     from already_sql import *
     t = MysqlAlready("127.0.0.1", "root", "mysql", "test")
-    print(t)
-
-    import redis
-    r = redis.Redis(host='0.0.0.0', port=6379, decode_responses=True)
-
-    b = r.get("name")
 
     app = Aquarius(__name__)
 
     @app.route("/")
     async def test(request):
-        a = str(t.sql("select * from auth_user"))
-        return {"name": a}
+        return HttpResponse((1,2))
 
     app.run()

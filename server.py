@@ -6,14 +6,15 @@ from request import Request
 
 class HttpProtocol(asyncio.Protocol):
 
-    __slots__ = ("_route", "_loop", "_transport", "_parser", "_request")
+    __slots__ = ("_route", "_loop", "_transport", "_parser", "_request", "_response")
 
-    def __init__(self, loop=None, route=None):
+    def __init__(self, loop=None, route=None, Response=None):
         self._route = route
         self._loop = loop
         self._transport = None
         self._parser = HttpRequestParser(self)
         self._request = Request()
+        self._response = Response
 
     def connection_made(self, transport):
         self._transport = transport
@@ -51,17 +52,12 @@ class HttpProtocol(asyncio.Protocol):
     async def start_response(self, transport, request):
         try:
             content = await self._route[request.url](request)
-            print(content)
-            transport.write(self.to_response(content))
+            transport.write(self._response(content))
         except Exception as e:
             print(e)
             transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
         if request.version == "1.0":
             transport.close()
-
-    def to_response(self, content):
-        return content
-
 
 
 if __name__ == "__main__":
