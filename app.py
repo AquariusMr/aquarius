@@ -65,6 +65,6 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        return HttpResponse((1,2))
+        return HttpResponse("shihongguang", status=403)
 
     app.run()
