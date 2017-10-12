@@ -54,17 +54,33 @@ class Aquarius:
             return result
 
     def to_response(self, content):
-        return content
+
+        if isinstance(content, (str, dict)):
+            return HttpResponse(content)
+
+        elif isinstance(content, (tuple, list)):
+            try:
+                return HttpResponse(content[0], **content[1])
+            except Exception as e:
+                return HttpResponse("Bad Server", status=500)
+        else:
+            return content
+
+    def to_template(self, content):
+        pass
+
 
 if __name__ == '__main__':
 
     from already_sql import *
-    t = MysqlAlready("127.0.0.1", "root", "mysql", "test")
+
+
+    app_sql = MysqlAlready("127.0.0.1", "root", "mysql", "test")
 
     app = Aquarius(__name__)
 
     @app.route("/")
-    async def test(request):
-        return HttpResponse("shihongguang", status=403)
+    def test(request):
+        return "Hello Aquarius"
 
     app.run()

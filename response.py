@@ -12,7 +12,7 @@ class BaseResponse:
         self._cookie = []
 
         self._response = [
-            b'HTTP/1.1 %(status)d OK\r\n',
+            b'HTTP/1.1 %(status)d \r\n',
             b'Content-Type: %(content_type)s; charset=utf-8\r\n',
             b'Server: aquarius\r\n',
             b'Content-Length:%(length)d\r\n\r\n',
