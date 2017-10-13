@@ -47,9 +47,3 @@ int main(int argc, char const *argv[])
     cout << author.GetName() << "\n" << author.GetAge() << endl;
     return 0;
 }
-
-
-https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9aac9c21368447e6&redirect_uri=https%3a%2f%2ftest.xinlianxd.com%2f&response_type=code&scope=snsapi_base#wechat_redirect 
-
-
-https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=200#wechat_redirect 

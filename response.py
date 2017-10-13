@@ -6,15 +6,15 @@ except ImportError:
 
 class BaseResponse:
 
-    __solts__ = ("_cookie", "_response", "format_kwargs")
+    __solts__ = ("_response", "format_kwargs", "_cookie")
 
     def __init__(self):
         self._cookie = []
-
         self._response = [
             b'HTTP/1.1 %(status)d \r\n',
             b'Content-Type: %(content_type)s; charset=utf-8\r\n',
             b'Server: aquarius\r\n',
+            b'',
             b'Content-Length:%(length)d\r\n\r\n',
             b'%(body)s\r\n\r\n']
 
@@ -23,11 +23,19 @@ class BaseResponse:
     @property
     def response(self):
         if self._cookie:
-            pass
+            self._response[3] = b"".join(self._cookie)
         return b"".join(self._response)
 
-    def set_cookie(self, name, value):
-        pass
+    def set_cookie(self, name, value, path="/"):
+        cookie_parameter = {}
+        cookie_parameter[b'key'] = self.to_bytes(name)
+        cookie_parameter[b'value'] = self.to_bytes(value)
+        cookie_parameter[b'path'] = self.to_bytes(path)
+        cookie_bytes = b'Set-cookie: %(key)s=%(value)s; path=%(path)s\r\n' 
+        cookie = cookie_bytes % cookie_parameter
+        self._cookie.append(cookie)
+
+        return self
 
     def to_bytes(self, string):
         return bytes(string, encoding='utf-8')
@@ -53,7 +61,9 @@ class BaseResponse:
 
             self.format_kwargs.update(header)
 
-        return self.response % self.format_kwargs
+        response_bytes = self.response % self.format_kwargs
+        self._cookie[:] = []
+        return response_bytes
 
 
 HttpResponse = BaseResponse()

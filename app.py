@@ -38,20 +38,8 @@ class Aquarius:
     def route(self, path):
 
         def _inner(func):
-            if not self.is_coroutine(func):
-                func = asyncio.coroutine(func)
             self._route_config.update({path: func})
         return _inner
-
-    @staticmethod
-    def is_coroutine(func):
-        try:
-            coro_or_func = func(Request)
-            result = hasattr(coro_or_func, "__await__")
-            if result:
-                coro_or_func.close()
-        finally:
-            return result
 
     def to_response(self, content):
 
@@ -80,7 +68,7 @@ if __name__ == '__main__':
     app = Aquarius(__name__)
 
     @app.route("/")
-    def test(request):
-        return "Hello Aquarius"
+    async def test(request):
+        return HttpResponse.set_cookie("name", "shihongguang")("Aquarius")
 
     app.run()
