@@ -67,7 +67,7 @@ class Aquarius:
 if __name__ == '__main__':
 
     from already_sql import *
-    from fetch import fetch_test
+    from fetch import HTTPRequest
 
 
     app_sql = MysqlAlready("127.0.0.1", "root", "mysql", "test")
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        result = await app.exec_task(fetch_test("www.baidu.com"))
+        result = await app.exec_task(HTTPRequest("www.baidu.com")("GET"))
         return HttpResponse.set_cookie("name", "shihongguang")(result)
 
     app.run()
