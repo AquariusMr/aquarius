@@ -14,13 +14,16 @@ class Aquarius:
         self._name = name
         self._protocol = protocol
         self._route_config = {}
+        self._loop = None
 
     def run(self, host="0.0.0.0", port=8002, **kwargs):
 
         HttpProtocol = self._protocol
 
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
         loop = asyncio.get_event_loop()
+        self._loop = loop
 
         HttpProtocol = partial(HttpProtocol, loop, self._route_config, 
             self.to_response)
@@ -57,10 +60,14 @@ class Aquarius:
     def to_template(self, content):
         pass
 
+    def exec_task(self, coro):
+        return self._loop.create_task(coro)
+
 
 if __name__ == '__main__':
 
     from already_sql import *
+    from fetch import fetch_test
 
 
     app_sql = MysqlAlready("127.0.0.1", "root", "mysql", "test")
@@ -69,6 +76,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def test(request):
-        return HttpResponse.set_cookie("name", "shihongguang")("Aquarius")
+        result = await app.exec_task(fetch_test("www.baidu.com"))
+        return HttpResponse.set_cookie("name", "shihongguang")(result)
 
     app.run()
