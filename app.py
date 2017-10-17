@@ -60,7 +60,30 @@ class Aquarius:
         pass
 
     def exec_task(self, coro):
+        """add a HTTPRequest task"""
         return self._loop.create_task(coro)
+
+    async def sleep(self, time, callback = None, *args, **kwargs):
+        """a coro func that exec later time"""
+
+        await asyncio.sleep(time)
+
+        if callback:
+            return callback(*args, **kwargs)
+
+    def awaiting(self, time):
+        """let func became a coro await time"""
+
+        def _init_set_wraper(func):
+        
+            async def _async_wrapper(*args, **kwargs):
+
+                await asyncio.sleep(time)
+                return func(*args, **kwargs)
+
+            return _async_wrapper
+
+        return _init_set_wraper
 
 
 if __name__ == '__main__':
@@ -77,5 +100,13 @@ if __name__ == '__main__':
     @app.route("/")
     async def index(request):
         result = await app.exec_task(HTTPRequest("www.baidu.com")("GET"))
+
+        @app.awaiting(3)
+        def printf(name):
+            print(name)
+
+        await printf("shihongguang")
+
         return HttpResponse.set_cookie("name", "shihongguang")(result)
+
     app.run()
