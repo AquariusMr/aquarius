@@ -38,11 +38,14 @@ class BaseResponse:
         return self
 
     def to_bytes(self, string):
+        if isinstance(string, bytes):
+            return string
         return bytes(string, encoding='utf-8')
 
     def __call__(self, content, **kwargs):
 
-        if not isinstance(content, str):
+        if not isinstance(content, (str, bytes)):
+
             content = json.dumps(content)
             self.format_kwargs.update({b"content_type": b"application/json"})
 

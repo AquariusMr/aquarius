@@ -48,7 +48,6 @@ class Aquarius:
 
         if isinstance(content, (str, dict)):
             return HttpResponse(content)
-
         elif isinstance(content, (tuple, list)):
             try:
                 return HttpResponse(content[0], **content[1])
@@ -76,8 +75,7 @@ if __name__ == '__main__':
     app = Aquarius(__name__)
 
     @app.route("/")
-    async def test(request):
+    async def index(request):
         result = await app.exec_task(HTTPRequest("www.baidu.com")("GET"))
         return HttpResponse.set_cookie("name", "shihongguang")(result)
-
     app.run()

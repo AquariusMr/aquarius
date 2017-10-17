@@ -4,6 +4,7 @@ import asyncio
 class HTTPRequest(object):
 
     def __new__(cls, *args, **kwargs):
+
         if not hasattr(cls, "_instance"):
             cls._instance = super(HTTPRequest, cls).__new__(cls)
 
