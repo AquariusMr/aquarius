@@ -3,9 +3,9 @@
 
 ```python
 	
-	# 1　异步请求
-	# 2	数据库缓存
-	# 3 异步延迟调用	
+	# 1.异步请求
+	# 2.数据库缓存
+	# 3.异步延迟调用	
 
     from already_sql import *
     from response import HttpResponse
