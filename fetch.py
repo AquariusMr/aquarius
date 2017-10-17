@@ -18,12 +18,13 @@ class HTTPRequest(object):
         self._method = method
 
     def __call__(self, method=None, uri=None):
-        self._uri = uri
+        if uri:
+            slef._uri = uri
 
         if method is None:
             pass
         elif method is "GET":
-            return self.get(uri)
+            return self.get()
 
         return self
 
