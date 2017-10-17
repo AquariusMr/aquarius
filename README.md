@@ -3,6 +3,7 @@
 
 ```python
 from app import Aquarius
+from response import HttpResponse
 from fetch import HTTPRequest
 
 

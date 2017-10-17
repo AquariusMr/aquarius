@@ -67,6 +67,7 @@ class Aquarius:
 if __name__ == '__main__':
 
     from already_sql import *
+    from response import HttpResponse
     from fetch import HTTPRequest
 
 
