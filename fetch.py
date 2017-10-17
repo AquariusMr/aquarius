@@ -67,7 +67,7 @@ class HTTPRequest(object):
 
             response_body = response_body + response_line.rstrip()
 
-            writer.close()
+        writer.close()
 
         return {'header': response_header, 'body': response_body}
 
