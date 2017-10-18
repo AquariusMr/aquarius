@@ -24,7 +24,7 @@ class HTTPRequest(object):
         if method is None:
             pass
         elif method is "GET":
-            return self.get(url)
+            return self.get()
 
         return self
 
