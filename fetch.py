@@ -11,7 +11,7 @@ class HTTPRequest(object):
         return cls._instance
 
     def __init__(self, uri=None, method=None):
-        self._request_header = '%(method)s / HTTP/1.0\r\nHost: %(uri)s\r\n\r\n'
+        self._request_header = ('%(method)s /%(uri)s HTTP/1.0\r\nHost: %(host)s\r\n\r\n')
         self._request_body = '%(body)s\r\n'
 
         self._uri = uri
@@ -19,16 +19,18 @@ class HTTPRequest(object):
 
     def __call__(self, method=None, uri=None):
         if uri:
-            slef._uri = uri
+            self._uri = uri
 
         if method is None:
             pass
         elif method is "GET":
-            return self.get()
+            return self.get(url)
 
         return self
 
     async def fetch(self, uri, port=80, method='GET'):
+
+        host = uri.split("?", 1)[0]
 
         response_header = {}
         response_body = b''
@@ -37,7 +39,7 @@ class HTTPRequest(object):
 
         reader, writer = await connect
 
-        request_string = self._request_header % {'method': 'GET', 'uri': uri}
+        request_string = self._request_header % {'method': 'GET', 'uri': uri , 'host': host}
 
         writer.write(request_string.encode('utf-8'))
 
