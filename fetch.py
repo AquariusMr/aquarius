@@ -88,7 +88,9 @@ class HTTPRequest(object):
 
 if __name__ == '__main__':
 
-    loop = asyncio.get_event_loop()
-    tasks = [HTTPRequest().get('0.0.0.0', 8000)]
-    loop.run_until_complete(asyncio.wait(tasks))
-    loop.close()
+    # loop = asyncio.get_event_loop()
+    # uri = """api.weixin.qq.com/sns/oauth2/access_token?appid=wx9aac9c21368447e6&secret=462a3ca630034191f0a5faacd75aa60f&code=011Uc5tA0RM8ue27phsA0qn8tA0Uc5tS&state&grant_type=authorization_code"""
+
+    # tasks = [HTTPRequest(uri)("GET")]
+    # loop.run_until_complete(asyncio.wait(tasks))
+    # loop.close()

@@ -26,6 +26,5 @@ class Request(object):
             return _query_string
 
     @property
-    def query_str(self):
+    def request_args(self):
         return self.__query_string_parameters()
-
