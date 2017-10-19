@@ -10,26 +10,32 @@ class HTTPRequest(object):
 
         return cls._instance
 
-    def __init__(self, uri=None, method=None):
+    def __init__(self, uri=None):
         self._request_header = ('%(method)s /%(path)s HTTP/1.0\r\n' 
                                 'Host: %(host)s\r\n\r\n')
         self._request_body = '%(body)s\r\n'
 
+        self._uri = uri
+
     @staticmethod
     def uri_parse(uri):
-        uris = uri.rsplit("/", 1)
+        uris = uri.rsplit('/', 1)
 
         if len(uris) > 1:
             path = uris[1]
         else:
-            path = ""
+            path = ''
 
-        return {'host': uris[0], "path": path}
+        return {'host': uris[0], 'path': path}
 
 
-    def __call__(self, method="GET", uri=None):
-        kwargs = self.uri_parse(uri)
-        kwargs["method"] = method
+    def __call__(self, method='GET'):
+        uri = self._uri
+
+        if method == 'GET':
+            return self.fetch(uri=uri)
+        if method == 'POST':
+            return self.fetch(uri=uri, method='POST')
 
         return self
 

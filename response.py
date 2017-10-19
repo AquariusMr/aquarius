@@ -1,10 +1,15 @@
+"""
+server
+"""
+
 try:
     import ujson as json
 except ImportError:
     import json
 
 
-class BaseResponse:
+class BaseResponse(object):
+    """Response"""
 
     __solts__ = ("_response", "format_kwargs", "_cookie")
 
@@ -22,22 +27,25 @@ class BaseResponse:
 
     @property
     def response(self):
+        """pass"""
         if self._cookie:
             self._response[3] = b"".join(self._cookie)
         return b"".join(self._response)
 
     def set_cookie(self, name, value, path="/"):
+        """set_cookie"""
         cookie_parameter = {}
         cookie_parameter[b'key'] = self.to_bytes(name)
         cookie_parameter[b'value'] = self.to_bytes(value)
         cookie_parameter[b'path'] = self.to_bytes(path)
-        cookie_bytes = b'Set-cookie: %(key)s=%(value)s; path=%(path)s\r\n' 
+        cookie_bytes = b'Set-cookie: %(key)s=%(value)s; path=%(path)s\r\n'
         cookie = cookie_bytes % cookie_parameter
         self._cookie.append(cookie)
 
         return self
 
     def to_bytes(self, string):
+        """str to bytes"""
         if isinstance(string, bytes):
             return string
         return bytes(string, encoding='utf-8')
@@ -57,8 +65,8 @@ class BaseResponse:
         if kwargs:
 
             header = {
-                self.to_bytes(key): 
-                (value if isinstance(value, int) else self.to_bytes(value)) 
+                self.to_bytes(key):
+                (value if isinstance(value, int) else self.to_bytes(value))
                 for key, value in kwargs.items()
             }
 
