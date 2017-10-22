@@ -1,3 +1,6 @@
+import re
+import time
+
 from httptools import HttpParserError, HttpRequestParser
 import asyncio
 
@@ -50,11 +53,31 @@ class HttpProtocol(asyncio.Protocol):
         )
 
     async def start_response(self, transport, request):
+
         try:
-            content = await self._route[request.url](request)
+            _route = self._route.get(request.url, self._route["__re__"])
+
+            if isinstance(_route, list):
+                for route in _route:
+                    rec, groups, func = route
+                    re_res = re.match(rec, request.url)
+                    if re_res:
+                        args = []
+
+                        for i in range(groups):
+                            args.append(re_res.group(i+1))
+
+                        content = await func(request, *args)
+
+                        break
+                else:
+                    raise Exception("404 %s" % request.url)
+            else:
+                content = await _route(request)
+
             transport.write(self._response(content))
         except Exception as e:
-            print(e)
+            print(e, time.ctime(), transport.get_extra_info("socket"))
             transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
         if request.version == "1.0":
             transport.close()

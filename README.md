@@ -2,10 +2,6 @@
 
 
 ```python
-	
-	# 1.异步请求
-	# 2.数据库缓存
-	# 3.异步延迟调用	
 
     from already_sql import *
     from response import HttpResponse
@@ -16,6 +12,7 @@
 
     app = Aquarius(__name__)
 
+    # 支持异步请求,延迟调用
     @app.route("/")
     async def index(request):
         result = await app.exec_task(HTTPRequest("www.baidu.com")("GET"))
@@ -27,6 +24,17 @@
         await printf("shihongguang")
 
         return HttpResponse.set_cookie("name", "shihongguang")(result)
+
+    # 路由支持正则
+    @app.route("/view(\d)(\d)")
+    class View(app.View):
+
+        def get(self, idt, pk):
+            print(idt, pk)
+            return HttpResponse("view hello")
+
+
+    app.run()
 
     app.run()
 ```

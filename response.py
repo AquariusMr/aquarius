@@ -1,6 +1,7 @@
 """
 server
 """
+import copy
 
 try:
     import ujson as json
@@ -27,9 +28,11 @@ class BaseResponse(object):
 
     @property
     def response(self):
-        """pass"""
+
         if self._cookie:
             self._response[3] = b"".join(self._cookie)
+            self._cookie[:] = []
+
         return b"".join(self._response)
 
     def set_cookie(self, name, value, path="/"):
@@ -51,16 +54,16 @@ class BaseResponse(object):
         return bytes(string, encoding='utf-8')
 
     def __call__(self, content, **kwargs):
+        format_kwargs_init = copy.deepcopy(self.format_kwargs)
 
-        if not isinstance(content, (str, bytes)):
-
+        if isinstance(content, dict):
             content = json.dumps(content)
-            self.format_kwargs.update({b"content_type": b"application/json"})
+            format_kwargs_init.update({b"content_type": b"application/json"})
 
         body = self.to_bytes(content)
         length = len(body)
 
-        self.format_kwargs.update({b"body": body, b"length": length})
+        format_kwargs_init.update({b"body": body, b"length": length})
 
         if kwargs:
 
@@ -70,10 +73,10 @@ class BaseResponse(object):
                 for key, value in kwargs.items()
             }
 
-            self.format_kwargs.update(header)
+            format_kwargs_init.update(header)
 
-        response_bytes = self.response % self.format_kwargs
-        self._cookie[:] = []
+        response_bytes = self.response % format_kwargs_init
+
         return response_bytes
 
 

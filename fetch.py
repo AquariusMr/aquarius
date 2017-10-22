@@ -59,7 +59,6 @@ class HTTPRequest(object):
         response_line = await reader.readline()
 
         first_header = response_line.rstrip()
-        print(first_header)
         response_header[b'first_line'] = first_header
 
         protocol, status = first_header.split(b' ', 1)
