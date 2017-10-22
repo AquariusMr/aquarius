@@ -123,10 +123,10 @@ class Aquarius:
                 res = ""
                 return res
 
-        def get(*args, **kwargs):
+        def get(self, *args, **kwargs):
             return HttpResponse("GET")
 
-        def post(*args, **kwargs):
+        def post(self, *args, **kwargs):
             return HttpResponse("POST")
 
 
