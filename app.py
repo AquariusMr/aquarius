@@ -99,6 +99,9 @@ class Aquarius:
 
     class View(object):
 
+        def __repr__(self):
+            return self.__class__.__name__
+
         async def __call__(self, request, *args, **kwargs):
             self.request = request
             if request.method == "GET":
@@ -134,8 +137,6 @@ if __name__ == '__main__':
     from fetch import HTTPRequest
 
 
-    app_sql = MysqlAlready("127.0.0.1", "root", "mysql", "test")
-
     app = Aquarius(__name__)
 
     @app.route("/")
@@ -144,7 +145,7 @@ if __name__ == '__main__':
         return HttpResponse.set_cookie("name", "shihongguang")(result)
 
     @app.route("/view(\d)(\d)")
-    class View(app.View):
+    class Auther(app.View):
 
         def get(self, idt, pk):
             print(idt, pk)

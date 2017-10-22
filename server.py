@@ -55,25 +55,20 @@ class HttpProtocol(asyncio.Protocol):
     async def start_response(self, transport, request):
 
         try:
-            _route = self._route.get(request.url, self._route["__re__"])
+            _view = self._route.get(request.url, self._route["__re__"])
 
-            if isinstance(_route, list):
-                for route in _route:
-                    rec, groups, func = route
-                    re_res = re.match(rec, request.url)
-                    if re_res:
-                        args = []
-
-                        for i in range(groups):
-                            args.append(re_res.group(i+1))
-
-                        content = await func(request, *args)
-
+            if isinstance(_view, list):
+                for _re_route_tuple in _view:
+                    regex, groups, view = _re_route_tuple
+                    _re_uri = re.match(regex, request.url)
+                    if _re_uri:
+                        args = [_re_uri.group(i+1) for i in range(groups)]
+                        content = await view(request, *args)
                         break
                 else:
                     raise Exception("404 %s" % request.url)
             else:
-                content = await _route(request)
+                content = await _view(request)
 
             transport.write(self._response(content))
         except Exception as e:
