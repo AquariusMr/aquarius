@@ -148,7 +148,6 @@ if __name__ == '__main__':
     class Auther(app.View):
 
         def get(self, idt, pk):
-            print(idt, pk)
             return HttpResponse("view hello")
 
     app.run()
