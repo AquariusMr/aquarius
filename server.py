@@ -7,11 +7,14 @@ import asyncio
 from request import Request
 
 
+AQUARIUS_ID = re.compile(rb'aquariusid=')
+
+
 class HttpProtocol(asyncio.Protocol):
 
     __slots__ = ("_route", "_loop", "_transport", "_parser", "_request", "_response")
 
-    def __init__(self, loop=None, route=None, re_route=None,Response=None):
+    def __init__(self, loop=None, route=None, re_route=None, Response=None, token=False):
         self._route = route
         self._re_route = re_route
         self._loop = loop
@@ -19,6 +22,9 @@ class HttpProtocol(asyncio.Protocol):
         self._parser = HttpRequestParser(self)
         self._request = Request()
         self._response = Response
+
+        self._token = token
+        self._middlewares = None
 
     def connection_made(self, transport):
         self._transport = transport
@@ -39,8 +45,14 @@ class HttpProtocol(asyncio.Protocol):
         self._request.headers[name] = value
 
     def on_headers_complete(self):
+ 
         self._request.version = self._parser.get_http_version()
         self._request.method = self._parser.get_method().decode()
+
+        if self._token:
+            aquarius_token = re.search(AQUARIUS_ID, self._request.headers.get(b'Cookie', b''))
+            if aquarius_token:
+                self._request.has_token = True
 
     def on_body(self, body):
         self._request.body.append(body)

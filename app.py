@@ -1,5 +1,6 @@
 import sys
 import re
+import uuid
 import asyncio
 import uvloop
 from functools import partial
@@ -11,12 +12,14 @@ from response import HttpResponse
 
 class Aquarius:
 
-    def __init__(self, name=None, protocol=HttpProtocol):
+    def __init__(self, name=None, protocol=HttpProtocol, token=True):
         self._name = name
         self._protocol = protocol
         self._route_config = {}
         self._re_route_config = []
         self._loop = None
+
+        self._token = True
 
     def run(self, host="0.0.0.0", port=8002, **kwargs):
 
@@ -28,7 +31,7 @@ class Aquarius:
         self._loop = loop
 
         HttpProtocol = partial(HttpProtocol, loop, self._route_config, self._re_route_config,
-                                self.to_response)
+                                self.to_response, self._token)
         for _route_set in self._route_config.items():
             print(_route_set)
         for _route_set_re in self._re_route_config:
@@ -144,7 +147,7 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def index(request):
-        return HttpResponse.set_cookie("name", "shihongguang")({"errcode": 0, "errmsg": "aquarius"})
+        return HttpResponse({"errcode": 0, "errmsg": "aquarius"}, request=request)
 
     @app.route("/view(\d)")
     class Auther(app.View):
@@ -152,5 +155,11 @@ if __name__ == '__main__':
         async def get(self, idt):
             return HttpResponse("view hello")
 
+
+    @app.route("/view(\d)(\d)")
+    class AutherView(app.View):
+
+        def get(self, idt, pk):
+            return HttpResponse("view hello2")
 
     app.run()

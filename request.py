@@ -1,6 +1,6 @@
 class Request(object):
 
-    __slots__ = ("uri", "version", "method", "headers", "body")
+    __slots__ = ("uri", "version", "method", "headers", "body", "has_token")
 
     def __init__(self):
         self.uri = ""
@@ -8,6 +8,8 @@ class Request(object):
         self.method = ""
         self.headers = {}
         self.body = []
+
+        self.has_token = False
 
     @property
     def url(self):

@@ -2,6 +2,7 @@
 server
 """
 import copy
+import uuid
 
 try:
     import ujson as json
@@ -53,7 +54,10 @@ class BaseResponse(object):
             return string
         return bytes(string, encoding='utf-8')
 
-    def __call__(self, content, **kwargs):
+    def __call__(self, content, request=None, **kwargs):
+        if request and not request.has_token:
+            self.set_cookie("aquariusid", str(uuid.uuid1()))
+
         format_kwargs_init = copy.deepcopy(self.format_kwargs)
 
         if isinstance(content, dict):
