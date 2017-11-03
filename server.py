@@ -11,8 +11,9 @@ class HttpProtocol(asyncio.Protocol):
 
     __slots__ = ("_route", "_loop", "_transport", "_parser", "_request", "_response")
 
-    def __init__(self, loop=None, route=None, Response=None):
+    def __init__(self, loop=None, route=None, re_route=None,Response=None):
         self._route = route
+        self._re_route = re_route
         self._loop = loop
         self._transport = None
         self._parser = HttpRequestParser(self)
@@ -55,7 +56,7 @@ class HttpProtocol(asyncio.Protocol):
     async def start_response(self, transport, request):
 
         try:
-            _view = self._route.get(request.url, self._route["__re__"])
+            _view = self._route.get(request.url, self._re_route)
 
             if isinstance(_view, list):
                 for _re_route_tuple in _view:

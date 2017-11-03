@@ -14,7 +14,8 @@ class Aquarius:
     def __init__(self, name=None, protocol=HttpProtocol):
         self._name = name
         self._protocol = protocol
-        self._route_config = {"__re__":[]}
+        self._route_config = {}
+        self._re_route_config = []
         self._loop = None
 
     def run(self, host="0.0.0.0", port=8002, **kwargs):
@@ -26,10 +27,12 @@ class Aquarius:
         loop = asyncio.get_event_loop()
         self._loop = loop
 
-        HttpProtocol = partial(HttpProtocol, loop, self._route_config,
+        HttpProtocol = partial(HttpProtocol, loop, self._route_config, self._re_route_config,
                                 self.to_response)
         for _route_set in self._route_config.items():
             print(_route_set)
+        for _route_set_re in self._re_route_config:
+            print(_route_set_re)
 
         server_coro = loop.create_server(HttpProtocol, host=host, port=port, **kwargs)
         server = loop.run_until_complete(server_coro)
@@ -51,13 +54,13 @@ class Aquarius:
                 if groups == 0:
                     self._route_config.update({path: func_obj})
                 if groups > 0:
-                    self._route_config["__re__"].append((regex, groups, func_obj))
+                    self._re_route_config.append((regex, groups, func_obj))
 
             else:
                 if groups == 0:
                     self._route_config.update({path: func})
                 if groups > 0:
-                    self._route_config["__re__"].append((regex, groups, func))
+                    self._re_route_config.append((regex, groups, func))
 
         return _inner
 
@@ -97,7 +100,7 @@ class Aquarius:
 
         return _init_set_wraper
 
-    class View(object):
+    class View:
 
         def __repr__(self):
             return self.__class__.__name__
@@ -141,13 +144,13 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def index(request):
-        result = await app.exec_task(HTTPRequest("www.baidu.com")("GET"))
-        return HttpResponse.set_cookie("name", "shihongguang")(result)
+        return HttpResponse.set_cookie("name", "shihongguang")({"errcode": 0, "errmsg": "aquarius"})
 
-    @app.route("/view(\d)(\d)")
+    @app.route("/view(\d)")
     class Auther(app.View):
 
-        def get(self, idt, pk):
+        async def get(self, idt):
             return HttpResponse("view hello")
+
 
     app.run()
