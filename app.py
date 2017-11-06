@@ -119,7 +119,7 @@ class Aquarius:
                     return await res
 
             elif request.method == "POST":
-                res = await self.post(*args, **kwargs)
+                res = self.post(*args, **kwargs)
 
                 if isinstance(res, bytes):
                     return res
