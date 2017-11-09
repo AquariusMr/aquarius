@@ -47,23 +47,23 @@ class Aquarius:
             loop.close()
 
     def route(self, path):
-        groups = path.count("(")
-        regex = re.compile("^" + path+ "$")
+        nums_group = path.count("(")
+        compile_string = re.compile("^" + path+ "$")
 
         def _inner(func):
 
             if func.__name__.lower() != func.__name__:
                 func_obj = func()
-                if groups == 0:
+                if nums_group == 0:
                     self._route_config.update({path: func_obj})
-                if groups > 0:
-                    self._re_route_config.append((regex, groups, func_obj))
+                if nums_groups > 0:
+                    self._re_route_config.append((compile_string, nums_group, func_obj))
 
             else:
-                if groups == 0:
+                if nums_groups == 0:
                     self._route_config.update({path: func})
-                if groups > 0:
-                    self._re_route_config.append((regex, groups, func))
+                if nums_groups > 0:
+                    self._re_route_config.append((compile_string, nums_group, func))
 
         return _inner
 
@@ -73,9 +73,6 @@ class Aquarius:
             return HttpResponse(content)
 
         return content
-
-    def to_template(self, content):
-        pass
 
     def exec_task(self, coro):
         """add a HTTPRequest task"""
@@ -126,8 +123,7 @@ class Aquarius:
                 else:
                     return await res
             else:
-                res = ""
-                return res
+                return HttpResponse("")
 
         def get(self, *args, **kwargs):
             return HttpResponse("GET")
