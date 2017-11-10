@@ -56,13 +56,13 @@ class Aquarius:
                 func_obj = func()
                 if nums_group == 0:
                     self._route_config.update({path: func_obj})
-                if nums_groups > 0:
+                if nums_group > 0:
                     self._re_route_config.append((compile_string, nums_group, func_obj))
 
             else:
-                if nums_groups == 0:
+                if nums_group == 0:
                     self._route_config.update({path: func})
-                if nums_groups > 0:
+                if nums_group > 0:
                     self._re_route_config.append((compile_string, nums_group, func))
 
         return _inner
