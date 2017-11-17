@@ -5,7 +5,7 @@ import asyncio
 from httptools import HttpParserError, HttpRequestParser
 from request import Request
 
- 
+
 AQUARIUS_ID = re.compile(rb'aquariusid=')
 
 
@@ -84,7 +84,7 @@ class HttpProtocol(asyncio.Protocol):
 
             transport.write(self._response(content))
         except Exception as e:
-            print(e, time.ctime(), transport.get_extra_info("socket"))
+#            print(e, time.ctime(), transport.get_extra_info("socket"))
             transport.write(b'HTTP/1.1 404 Not Found\r\nServer: aquarius\r\nContent-Length:9\r\n\r\nNot Found\r\n\r\n')
         if request.version == "1.0":
             transport.close()

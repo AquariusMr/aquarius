@@ -1,5 +1,6 @@
 # python3 web server
 
+用于学习研究HTTP协议与asyncio uvloop的使用
 
 ```python
 
@@ -33,8 +34,6 @@
             print(idt, pk)
             return HttpResponse("view hello")
 
-
-    app.run()
 
     app.run()
 ```
