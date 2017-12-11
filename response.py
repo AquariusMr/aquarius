@@ -54,9 +54,12 @@ class BaseResponse(object):
             return string
         return bytes(string, encoding='utf-8')
 
-    def __call__(self, content, request=None, **kwargs):
+    def __call__(self, content, request=None, token_name="aquariusid", **kwargs):
+        """__call__(self, content, request=None, **kwargs)
+        request must have then can set uuid cookie.
+        """
         if request and not request.has_token:
-            self.set_cookie("aquariusid", str(uuid.uuid1()))
+            self.set_cookie(token_name, str(uuid.uuid1()))
 
         format_kwargs_init = copy.deepcopy(self.format_kwargs)
 

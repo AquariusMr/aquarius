@@ -143,7 +143,22 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def index(request):
-        return HttpResponse({"errcode": 0, "errmsg": "aquarius"}, request=request)
+        import aiohttp
+        import asyncio
+        import async_timeout
+
+        async def fetch(session, url):
+            async with session.get(url) as response:
+                return await response.text()
+
+        async def main():
+            async with aiohttp.ClientSession() as session:
+                html = await fetch(session, 'http://www.baidu.com')
+                return html
+
+        html = await app.exec_task(main())
+
+        return html
 
     @app.route("/view(\d)")
     class Auther(app.View):
@@ -158,4 +173,4 @@ if __name__ == '__main__':
         def get(self, idt, pk):
             return HttpResponse("view hello2")
 
-    app.run()
+    app.run(port=8001)
