@@ -28,7 +28,6 @@ class HTTPRequest(object):
 
         return {'host': uris[0], 'path': path}
 
-
     def __call__(self, method='GET'):
         uri = self._uri
 
@@ -44,7 +43,6 @@ class HTTPRequest(object):
         kwargs["method"] = method
 
         request_string = self._request_header % kwargs
-
 
         connect = asyncio.open_connection(uri, port)
         reader, writer = await connect
@@ -71,7 +69,7 @@ class HTTPRequest(object):
             if response_line == b'\r\n':
                 break
 
-            key , value= response_line.rstrip().split(b':', 1)
+            key, value = response_line.rstrip().split(b':', 1)
             response_header[key] = value.strip()
 
         while True:
@@ -85,8 +83,6 @@ class HTTPRequest(object):
         writer.close()
 
         return {'header': response_header, 'body': response_body}
-
-
 
 if __name__ == '__main__':
     requests = HTTPRequest()
